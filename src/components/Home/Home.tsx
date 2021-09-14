@@ -95,7 +95,7 @@ export const Home = ( props:Props) => {
                 <div className={classes.main_text}>
                     <h1>{ props.title }</h1>
                     <p>NW Auto Group Sales</p>
-                    <Button color='primary' variant="contained">View Dashboard</Button>
+                    <Button color='primary' variant="contained" onClick={event =>  window.location.href='/dashboard'}>View Dashboard</Button>
                 </div>
             </main>
         </div>
