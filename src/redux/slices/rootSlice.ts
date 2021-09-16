@@ -13,10 +13,15 @@ const rootSlice = createSlice({
     },
     reducers: {
         chooseName: (state, action) => { state.make = action.payload},
-        choosePrice: (state, action) => { state.price = action.payload}
+        chooseModel: (state, action) => { state.model = action.payload},
+        choosePrice: (state, action) => { state.price = action.payload},
+        chooseTrim: (state, action) => { state.trim = action.payload},
+        chooseOptions: (state, action) => { state.added_options = action.payload},
+        chooseDimensions: (state, action) => { state.dimensions = action.payload},
+        chooseWeight: (state, action) => { state.weight = action.payload}
     }
 })
 
 // Export Reducer
 export const reducer = rootSlice.reducer;
-export const { chooseName, choosePrice, } = rootSlice.actions;
+export const { chooseName, chooseModel, choosePrice, chooseTrim, chooseOptions, chooseDimensions, chooseWeight } = rootSlice.actions;

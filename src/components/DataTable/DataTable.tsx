@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { DataGrid, GridColDef, GridDataContainer, GridValueGetterParams } from '@material-ui/data-grid';
+import { DataGrid, GridColDef, GridDataContainer, GridValueGetterParams, GridSelectionModel } from '@material-ui/data-grid';
 import { server_calls } from '../../api'; 
 import { useGetData } from '../../custom-hooks';
 import { Button,
@@ -18,12 +18,15 @@ const columns: GridColDef[] = [
     },
     { 
       field: 'make', 
-      headerName: 'Make', 
+      headerName: 'Make',
+      type: 'string',
       width: 150, 
-      editable: true, },
+      editable: true
+    },
     { 
       field: 'model', 
-      headerName: 'Model', 
+      headerName: 'Model',
+      type: 'string', 
       width: 150, 
       editable: true 
     },
@@ -65,30 +68,13 @@ const columns: GridColDef[] = [
     },
   ];
 
-  // const rows = [
-  //   { id: 1, make: 'Toyota', model: 'Tacoma', year: '2018' },
-  //   { id: 2, make: 'Volkswagon', model: 'Golf-GTI', year: '2012' },
-  //   { id: 3, make: 'Ford', model: 'F-150', year: '2001' },
-  //   { id: 4, make: 'Honda', model: 'Civic', year: '2004' },
-  //   { id: 5, make: 'Ford', model: 'Focus', year: '2003' },
-  //   { id: 6, make: 'Ford', model: 'Ranger', year: '1996' },
-  //   { id: 7, make: 'Mazda', model: '323', year: '1988' },
-  //   { id: 8, make: 'Chevrolet', model: 'Camero', year: '1967' },
-  //   { id: 9, make: 'Mercury', model: 'Comet', year: '1965' },
-  //   { id: 10, make: 'Chevrolet', model: 'Camero', year: '1972' },
-  // ];
 
-interface gridData{
-  data:{
-    id?:string;
-  }
-}
 
 export const DataTable =  () => {
 
   let { carData, getData } = useGetData();
   let [open, setOpen] = useState(false);
-  let [gridData, setData] = useState<gridData>({data:{}})
+  let [gridData, setData] = useState<GridSelectionModel>([])
 
   let handleOpen = () => {
     setOpen(true)
@@ -99,16 +85,19 @@ export const DataTable =  () => {
   }
 
   let deleteData = () => {
-    server_calls.delete(gridData.data.id!)
+    server_calls.delete(`${gridData[0]}`)
     getData()
   }
 
-  console.log(gridData.data.id)
 
     return (
         <div style={{ height: 400, width: '100%' }}>
           <h2>Vehicles In Inventory</h2>
-          <DataGrid rows={carData} columns={columns} pageSize={5} checkboxSelection />
+          <DataGrid rows={carData} columns={columns} pageSize={5} checkboxSelection onSelectionModelChange={ (newSelectionModel) => {
+          setData(newSelectionModel);
+          }}
+          selectionModel={gridData}
+          {...carData}/>
 
         <Button onClick={handleOpen}>Update</Button>
         <Button variant="contained" color="secondary" onClick={deleteData}>Delete</Button>
@@ -117,8 +106,8 @@ export const DataTable =  () => {
         <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
           <DialogTitle id="form-dialog-title">Update Your Vehicle</DialogTitle>
           <DialogContent>
-            <DialogContentText>Vehicle: {gridData.data.id}</DialogContentText>
-              <CarForm id={gridData.data.id!}/>
+            <DialogContentText>Vehicle: {gridData[0]}</DialogContentText>
+              <CarForm id={`${gridData[0]}`}/>
           </DialogContent>
           <DialogActions>
             <Button onClick = {handleClose} color="primary">Cancel</Button>

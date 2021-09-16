@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { chooseName, choosePrice } from '../../redux/slices/rootSlice';
+import { chooseName, choosePrice, chooseModel, chooseTrim, chooseOptions, chooseDimensions, chooseWeight } from '../../redux/slices/rootSlice';
 import { Input } from '../sharedComponents/Input';
 import { Button } from '@material-ui/core';
 
@@ -16,7 +16,12 @@ interface CarFormProps {
 
 interface CarState {
     make: string;
+    model: string;
     price: string;
+    trim: string;
+    added_options: string;
+    dimensions: string;
+    weight: string;
 }
 
 export const CarForm = (props:CarFormProps) => {
@@ -25,7 +30,12 @@ export const CarForm = (props:CarFormProps) => {
     let { carData, getData } = useGetData();
     const store = useStore()
     const make = useSelector<CarState>(state => state.make)
+    const model = useSelector<CarState>(state => state.model)
     const price = useSelector<CarState>(state => state.price)
+    const trim = useSelector<CarState>(state => state.trim)
+    const added_options = useSelector<CarState>(state => state.added_options)
+    const dimensions = useSelector<CarState>(state => state.dimensions)
+    const weight = useSelector<CarState>(state => state.weight)
     const { register, handleSubmit } = useForm({ })
 
     const onSubmit = async (data:any, event:any) => {
@@ -38,7 +48,13 @@ export const CarForm = (props:CarFormProps) => {
             event.target.reset();
         } else {
             dispatch(chooseName(data.make))
+            dispatch(chooseModel(data.model))
             dispatch(choosePrice(data.price))
+            dispatch(chooseTrim(data.trim))
+            dispatch(chooseOptions(data.added_options))
+            dispatch(chooseDimensions(data.dimensions))
+            dispatch(chooseWeight(data.weight))
+            
             await server_calls.create(store.getState())
             window.location.reload()
         }
@@ -61,11 +77,11 @@ export const CarForm = (props:CarFormProps) => {
                 </div>
                 <div>
                     <label htmlFor="trim">Trim</label>
-                    <Input {...register('trim')} name="trim" placeholder="trim"/>
+                    <Input {...register('trim')} name="trim" placeholder="Trim"/>
                 </div>
                 <div>
                     <label htmlFor="added_options">Options</label>
-                    <Input {...register('added_options')} name="added_options" placeholder="added_options"/>
+                    <Input {...register('added_options')} name="added_options" placeholder="Added Options"/>
                 </div>
                 <div>
                     <label htmlFor="dimensions">Dimensions</label>
